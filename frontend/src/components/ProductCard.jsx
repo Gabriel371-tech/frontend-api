@@ -12,16 +12,16 @@ const ProductCard = ({ product, onDelete }) => {
             <Package size={20} />
           </div>
           <span className="text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-600 rounded-full uppercase">
-            {product.category?.name || 'Sem Categoria'}
+            {product.categoria?.nome || 'Sem Categoria'}
           </span>
         </div>
         
         <h3 className="text-lg font-bold text-gray-900 mb-1 truncate">
-          {product.name}
+          {product.nome}
         </h3>
         
         <p className="text-xl font-extrabold text-blue-600">
-          {formatCurrency(product.price)}
+          {formatCurrency(product.preco)}
         </p>
       </div>
       

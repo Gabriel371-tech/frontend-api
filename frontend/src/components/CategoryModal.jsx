@@ -4,10 +4,8 @@ import api from '../api/axios';
 import Input from './Input';
 import Button from './Button';
 
-const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [categoryId, setCategoryId] = useState('');
+const CategoryModal = ({ isOpen, onClose, onSuccess }) => {
+  const [nome, setNome] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,29 +15,21 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !price || !categoryId) {
-      setError('Todos os campos são obrigatórios.');
+    if (!nome) {
+      setError('O nome da categoria é obrigatório.');
       return;
     }
 
     setLoading(true);
     try {
-      await api.post('/api/produtos', {
-        nome: name,
-        preco: parseFloat(price),
-        categoriaId: parseInt(categoryId)
-      });
+      await api.post('/api/categorias', { nome });
       
-      // Reset form
-      setName('');
-      setPrice('');
-      setCategoryId('');
-      
+      setNome('');
       onSuccess();
       onClose();
     } catch (err) {
       console.error(err);
-      setError('Erro ao salvar produto. Tente novamente.');
+      setError('Erro ao salvar categoria. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -57,7 +47,7 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Novo Produto</h3>
+              <h3 className="text-lg font-medium text-gray-900">Nova Categoria</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
                 <X size={20} />
               </button>
@@ -71,39 +61,12 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
               )}
 
               <Input
-                label="Nome do Produto"
-                placeholder="Ex: Teclado Mecânico"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                label="Nome da Categoria"
+                placeholder="Ex: Eletrônicos"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 required
               />
-
-              <Input
-                label="Preço (R$)"
-                type="number"
-                step="0.01"
-                placeholder="0,00"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                required
-              />
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Categoria
-                </label>
-                <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  required
-                >
-                  <option value="">Selecione uma categoria</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.nome}</option>
-                  ))}
-                </select>
-              </div>
 
               <div className="mt-5 sm:mt-6 flex gap-3">
                 <Button
@@ -131,4 +94,4 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
   );
 };
 
-export default ProductModal;
+export default CategoryModal;
