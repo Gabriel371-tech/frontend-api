@@ -1,5 +1,3 @@
-![Logo Inova Gestão](./logo.svg)
-
 # Projeto Frontend - Controle de Produtos
 
 Este repositório contém o frontend da aplicação de Controle de Produtos, construído com React, Vite e Tailwind CSS.
