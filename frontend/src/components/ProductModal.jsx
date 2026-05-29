@@ -1,45 +1,51 @@
-import React, { useState } from 'react';
-import { X, Save } from 'lucide-react';
-import api from '../api/axios';
-import Input from './Input';
-import Button from './Button';
+import React, { useState } from "react";
+import { X, Save } from "lucide-react";
+import api from "../api/axios";
+import Input from "./Input";
+import Button from "./Button";
 
 const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [categoryId, setCategoryId] = useState('');
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!name || !price || !categoryId) {
-      setError('Todos os campos são obrigatórios.');
+      setError("Todos os campos são obrigatórios.");
       return;
     }
 
     setLoading(true);
     try {
-      await api.post('/api/produtos', {
+      await api.post("/api/produtos", {
         nome: name,
         preco: parseFloat(price),
-        categoriaId: parseInt(categoryId)
+        categoriaId: parseInt(categoryId),
       });
-      
+
       // Reset form
-      setName('');
-      setPrice('');
-      setCategoryId('');
-      
+      setName("");
+      setPrice("");
+      setCategoryId("");
+
       onSuccess();
       onClose();
     } catch (err) {
       console.error(err);
-      setError('Erro ao salvar produto. Tente novamente.');
+      const apiError =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.response?.data?.errors?.map((item) => item.defaultMessage || item.message).join(", ") ||
+        err.message ||
+        "Erro ao salvar produto. Tente novamente.";
+      setError(apiError);
     } finally {
       setLoading(false);
     }
@@ -52,7 +58,9 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
           <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={onClose}></div>
         </div>
 
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+          &#8203;
+        </span>
 
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -65,9 +73,7 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm">
-                  {error}
-                </div>
+                <div className="bg-red-50 text-red-700 p-3 rounded-md text-sm">{error}</div>
               )}
 
               <Input
@@ -89,9 +95,7 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
               />
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Categoria
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   value={categoryId}
@@ -99,19 +103,16 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
                   required
                 >
                   <option value="">Selecione uma categoria</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.nome}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="mt-5 sm:mt-6 flex gap-3">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="flex-1"
-                  onClick={onClose}
-                >
+                <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
                   Cancelar
                 </Button>
                 <Button
@@ -120,7 +121,7 @@ const ProductModal = ({ isOpen, onClose, categories, onSuccess }) => {
                   disabled={loading}
                 >
                   <Save size={18} />
-                  {loading ? 'Salvando...' : 'Salvar'}
+                  {loading ? "Salvando..." : "Salvar"}
                 </Button>
               </div>
             </form>
